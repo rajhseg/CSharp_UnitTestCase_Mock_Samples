@@ -1,0 +1,74 @@
+﻿@page "/listpersons"
+@using Abc.BusinessService
+@using WebBlazorApp.Models
+
+@attribute [Authorize(Roles = "User,Admin")]
+
+@inject AuthenticationStateProvider authProvider;
+@inject NavigationManager navigationManager;
+@inject IPersonService personService;
+
+
+@if(username==null) 
+{
+	<p>Loading....</p>
+} 
+else {
+
+	<button class="btn btn-outline-primary" @onclick="AddPerson">Add Person</button>
+	<table class="table table-active table-primary">
+
+		<tr>
+			<th>Name</th>
+			<th>Age</th>
+			<th>Salary</th>
+			<th>Created Date</th>
+		</tr>
+
+		@foreach (var item in Persons)
+		{
+			<tr>
+				<td>@item.Name</td>
+				<td>@item.Age</td>
+				<td>@item.Salary</td>
+				<td>@item.CreatedDate</td>
+			</tr>
+		}
+
+	</table>
+}
+
+
+@code {
+
+	[CascadingParameter]
+	private Task<AuthenticationState> AuthenticationState { set; get; }
+
+	private string? username = "";
+
+	private bool? isAuthenticated = false;
+
+	private List<PersonModel> Persons = new List<PersonModel>();	
+
+	protected override async Task OnInitializedAsync()
+	{
+		var authstate = await AuthenticationState;
+
+		if (authstate != null)
+		{
+			username = authstate?.User?.Identity?.Name;
+			isAuthenticated = authstate?.User?.Identity?.IsAuthenticated;
+			Persons = (await personService.GetAll()).Select(x => new PersonModel {
+										Name = x.Name,
+										Age = x.Age.ToString(),
+										Salary = x.Salary.ToString(),
+										CreatedDate = x.Created
+							}).ToList();
+		}
+	}
+
+	public async Task AddPerson(){
+		navigationManager.NavigateTo("/addperson");
+	}
+	
+}

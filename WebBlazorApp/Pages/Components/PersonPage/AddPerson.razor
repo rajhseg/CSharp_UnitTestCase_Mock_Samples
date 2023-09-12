@@ -1,0 +1,76 @@
+﻿@page "/addperson"
+
+@using Abc.BusinessService
+@using Abc.UnitOfWorkLibrary
+@using WebBlazorApp.Models
+
+@attribute [Authorize(Roles ="Admin,User")]
+
+@inject NavigationManager navigationManager;
+@inject AuthenticationStateProvider authProvider;
+@inject IPersonService personService;
+@inject IUnitOfWork unitOfWork;
+
+
+<h5>AddPerson</h5>
+
+<EditForm style="width:500px" Model="Person">
+	<DataAnnotationsValidator />
+	<ValidationSummary />
+	<div>				
+		<InputText @bind-Value="Person.Name" class="form-control" placeholder="Name"></InputText>
+		<ValidationMessage For="(()=>Person.Name)" />
+	</div>
+	<br />
+	<div>
+		<InputText type="number" @bind-Value="Person.Age" class="form-control" placeholder="Age"></InputText>
+		<ValidationMessage For="(()=>Person.Age)" />
+	</div>
+	<br/>
+	<div>
+		<InputText type="number" @bind-Value="Person.Salary" class="form-control" placeholder="Salary"></InputText>
+		<ValidationMessage For="(()=> Person.Salary)" />
+	</div>
+	<div>
+		<br />
+		<button class="btn btn-outline-primary" @onclick="BackToIndex">Back</button>
+		<button class="btn btn-outline-success" @onclick="Save">Save</button>
+	</div>
+</EditForm>
+
+@code {
+
+	[CascadingParameter]
+	public Task<AuthenticationState> AuthenticationState { get; set; }
+
+	public PersonModel Person { get; set; } = new PersonModel();
+
+
+	public void BackToIndex(){
+		navigationManager.NavigateTo("/listpersons");
+	}
+
+	public async Task Save()
+	{
+		try
+		{
+			await this.personService.AddPerson(new ABC.Models.Person
+			{
+				Name = this.Person.Name,
+				Age = int.Parse(this.Person.Age),
+				Salary = int.Parse(this.Person.Salary),
+				Created = this.Person.CreatedDate
+			});
+
+			navigationManager.NavigateTo("/listpersons");
+		}
+		catch (Exception ex)
+		{
+			throw;
+		}
+		finally
+		{
+
+		}
+	}
+}

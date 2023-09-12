@@ -1,0 +1,88 @@
+﻿@page "/chat"
+
+
+@using Microsoft.AspNetCore.SignalR.Client
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@using WebBlazorApp.Models
+
+@inject NavigationManager navigationManager
+
+
+<h3>Chat</h3>
+
+<AuthorizeView Roles="User,Admin">
+	<Authorized>
+
+		<div style="width:300px">
+			@foreach (var item in Messages)
+			{
+				<br/>
+				if(@item.IsReceived)
+				{
+					<span style="float:right"><span style="color:orange">@item.UserName:</span><span><b>@item.Message</b></span></span>
+				} 
+				else 
+				{
+					<span style="float:left"><span style="color:green">@item.UserName:</span> <span><b>@item.Message</b></span></span>
+				}
+			}
+		</div>
+
+	</Authorized>
+
+	<NotAuthorized>
+	</NotAuthorized>
+</AuthorizeView>
+
+<br/>
+<br/>
+<EditForm Model="Message">
+	<InputText @bind-Value="Message.Message"></InputText>
+	<button @onclick="SendMessage">Send</button>	
+</EditForm>
+
+@code {
+
+	List<MessageModel> Messages = new List<MessageModel>();
+
+	public MessageModel Message { get; set; } = new MessageModel();
+
+	HubConnection builder;
+
+	[CascadingParameter]
+	public Task<AuthenticationState> AuthenticationState { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		var state = await AuthenticationState;
+		var username = state.User.Identity.Name;
+
+		builder = new HubConnectionBuilder().WithUrl(navigationManager.ToAbsoluteUri("/chathub")).Build();
+
+		builder.On<string, string>("ReceiveMessage", (username, message) =>
+		{
+			Messages.Add(new MessageModel { Message = message, IsReceived = true, UserName = username });
+			InvokeAsync(() =>
+			{
+				StateHasChanged();
+			});			
+		});
+
+		await builder.StartAsync();
+
+		await builder.SendAsync("Connect", username);
+
+		await base.OnInitializedAsync();
+	}
+
+	public async void SendMessage()
+	{
+		builder.SendAsync("SendMessage", Message.Message);
+		Messages.Add(new MessageModel { Message = Message.Message, IsReceived = false, UserName = (await AuthenticationState).User.Identity.Name });
+		
+		Message = new MessageModel();
+
+		StateHasChanged();
+	}
+
+}
