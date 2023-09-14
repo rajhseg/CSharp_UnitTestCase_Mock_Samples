@@ -5,3 +5,5 @@ This repo consists of samples writing unit test case for C Sharp logic using Moc
 1. Mocking Client Layer using Mock Framework
 2. Mocking Business Layer using Mock Framework
 3. Mocking Various formats DB Layer using Mock Framework.
+4. Mock EF Layer
+5. Mock Stored Procedure call in EF core in this sample
