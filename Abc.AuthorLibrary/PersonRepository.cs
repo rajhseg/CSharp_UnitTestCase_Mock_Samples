@@ -31,6 +31,6 @@ namespace Abc.AuthorLibrary
 			}
 
 			return Enumerable.Empty<Person>();
-		}
+		}		
 	}
 }

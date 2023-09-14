@@ -70,5 +70,10 @@ namespace Abc.BusinessService
                 await this._personRepository.Update(person);
             });			
 		}
+
+		public async Task UpdatePer(Person per)
+		{
+
+		}
 	}
 }

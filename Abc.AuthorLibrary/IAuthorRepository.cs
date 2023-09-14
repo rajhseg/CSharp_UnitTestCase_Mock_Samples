@@ -8,5 +8,7 @@ namespace Abc.AuthorLibrary
         Task UpdateAuthorName(int id, string name);
 
         Task<IEnumerable<Author>> GetAllWithBooks();
+
+        Task<int> GetPersonId(Guid uniqueId);
     }
 }

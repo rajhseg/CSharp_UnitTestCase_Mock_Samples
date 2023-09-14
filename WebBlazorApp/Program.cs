@@ -30,6 +30,8 @@ builder.Services.AddDbContext<DbContext, AbcContext>(options => options.UseSqlSe
                                                     x => x.MigrationsAssembly("ABC.BusinessBase")),
                                                     contextLifetime: ServiceLifetime.Singleton);
 
+builder.Services.AddTransient<DbConnectionProvider>();
+
 builder.Services.AddSingleton<IAuthorRepository, AuthorRepository>();
 builder.Services.AddSingleton<IBooksRepository, BookRepository>();
 builder.Services.AddSingleton<IPersonRepository, PersonRepository>();
