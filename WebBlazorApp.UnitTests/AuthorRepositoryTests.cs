@@ -68,7 +68,7 @@ namespace WebBlazorApp.UnitTests
         {
             using (var context = GetContext())
             {
-                Mock<DbConnectionProvider> connProvider = new Mock<DbConnectionProvider>();
+                Mock<DbConnectionProvider> connProvider = new Mock<DbConnectionProvider>(context);
                 AuthorRepository repo = new AuthorRepository(context, connProvider.Object);
                 await repo.Add(new ABC.Models.Author { Id = 1, Name = "ABC" });
                 await context.SaveChangesAsync();
@@ -82,7 +82,7 @@ namespace WebBlazorApp.UnitTests
         {
             using (var context = GetContext())
             {
-                Mock<DbConnectionProvider> connProvider = new Mock<DbConnectionProvider>();
+                Mock<DbConnectionProvider> connProvider = new Mock<DbConnectionProvider>(context);
                 AuthorRepository repo = new AuthorRepository(context, connProvider.Object);
 
                 await repo.Add(new ABC.Models.Author { Id = 3, Name = "ABC" });
@@ -106,7 +106,7 @@ namespace WebBlazorApp.UnitTests
         {
             using (var context = GetContext())
             {
-                Mock<DbConnectionProvider> connProvider = new Mock<DbConnectionProvider>();
+                Mock<DbConnectionProvider> connProvider = new Mock<DbConnectionProvider>(context);
                 AuthorRepository repo = new AuthorRepository(context, connProvider.Object);
                 await repo.Add(new ABC.Models.Author { Id = 4, Name = "ABC" });
                 await context.SaveChangesAsync();
@@ -124,7 +124,7 @@ namespace WebBlazorApp.UnitTests
         {
             using (var context = GetContext())
             {
-                Mock<DbConnectionProvider> connProvider = new Mock<DbConnectionProvider>();
+                Mock<DbConnectionProvider> connProvider = new Mock<DbConnectionProvider>(context);
                 AuthorRepository repo = new AuthorRepository(context, connProvider.Object);
                 await repo.Add(new ABC.Models.Author { Id = 2, Name = "ABC" });
                 await context.SaveChangesAsync();

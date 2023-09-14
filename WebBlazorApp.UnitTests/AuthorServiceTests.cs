@@ -33,7 +33,9 @@ namespace WebBlazorApp.UnitTests
             context = new AbcContext(options);
             
             unitOfWorkMock = new Mock<IUnitOfWork>();
-            authorRepositoryMock = new Mock<AuthorRepository>(context);
+            Mock<DbConnectionProvider> connProvider = new Mock<DbConnectionProvider>(context);
+
+            authorRepositoryMock = new Mock<AuthorRepository>(context, connProvider.Object);
             transactionService = new GenericTransactionService(unitOfWorkMock.Object);
             service = new AuthorService(authorRepositoryMock.Object, transactionService);
         }
